@@ -1,0 +1,134 @@
+AutoHotKey 라이브러리
+
+#SingleInstance Force		; 미종료 상태에서 새로켜짐
+
+SendMode Input				; 정확하고 신속한 입력방식(관리자권한 필요한 창 등)
+
+CoordMode, Mouse, Screen  	; 좌표 모드를 스크린 좌표로 설정(절대 좌표값)
+
+#Persistent  				; 스크립트가 종료되지 않도록 합니다
+
+#y::Reload				; 윈도우+y 스크립트 자동 업데이트
+
+#n:: Run Notepad			;노트패드 실행
+
+#NoEnv					; 환경변수 무시, 스크립트 효율
+
+SendMode Input			; 속도, 안정성 향상
+
+MouseMove, 627, 375	; 재고관리 화면 즐겨찾기로 마우스 위치 이동
+
+Click, 627, 375			; 재고관리 화면 열기(클릭)
+
+Send, {Esc}				; esc키 눌러서 재고위치 선택창 닫기
+                                               ;{Enter}
+
+Send, %resultFileName%	; 변수를 사용할 때는 %로 둘러싸기
+
+오토핫키에서 이스케이프 문자는 ` 입니다. 키보드의 물결표를 Shift 키를 떼고 입력하시면 됩니다.
+
+MsgBox, % a b c d e f g h i j   ; 변수가 여러개인 때 %위에 공백 후 변수값 쓰면 자동으로 변수로 인식 가능. 단, 변수끼리는 공백으로 구분
+
+Send, ^c					; Ctrl+c 복사
+
+F1::
+Send, 안녕하세요. 저는 홍길동입니다.
+return
+
+; Esc 키를 누르면 스크립트 종료
+Esc::ExitApp
+
+ExitApp: 종료
+return: 정지
+
+
+; 오늘부터 14일 이전의 날짜 값을 Previous14Days 변수에 할당
+FormatTime, CurrentDateTime,, yyyyMMdd
+Today := CurrentDateTime
+EnvAdd, Today, -14, Days	; 14일 이 전의 날짜계산
+FormatTime, Previous14Days, %Today%, yyyyMMdd
+; 사용할 때는 %Previous14Days%
+
+; 오늘부터 1일 이후(내일)의 날짜 값 변수에 할당
+FormatTime, CurrentDateTime,, yyyyMMdd
+Today := CurrentDateTime
+EnvAdd, Today, 1, Days	; 1일 이 후의 날짜계산
+FormatTime, NextDay, %Today%, yyyyMMdd
+; 사용할 때는 %NextDay%
+
+; 날짜,시간 입력 단축키
+:*:]d::  ; 이 핫스트링은 아래의 명령어를 통하여 "]d"를 현재 날짜와 시간으로 교체합니다.
+FormatTime, CurrentDateTime,, M/d/yyyy h:mm tt  ; 대략 다음과 같이 보일 것입니다: 9/1/2005 3:53 PM
+SendInput %CurrentDateTime%
+return
+
+;EnvAdd 주어진 값을 자신과 합해 변수에 설정합니다 
+EnvAdd, Today, -14, Days	; 14일 이 전의 날짜계산
+
+; 창 최대화
+WinGet, active_id, ID, A  ; 현재 활성 창의 ID 가져오기
+WinMaximize, ahk_id %active_id%  ; 해당 ID의 창을 최대화
+
+
+MsgBox, 4, 제목, 내용
+IfMsgBox, Yes
+{
+    MsgBox, 예를 눌렀습니다.
+}
+IfMsgBox, No
+{
+    MsgBox, 아니오를 눌렀습니다.
+}
+
+
+A := 2+3    ; 5 연산 후 값 대입
+A = 2+3     ; 2+3 문자열로 인식
+result := %A% + %F%    ; 오류. := 사용할 때는 % 사용시 문법 오류
+
+; 인풋박스 입력폼의 활용
+InputBox, var, 입력창타이틀, 입력창설명메시지,,,,,,,
+
+; 윈도우의 이동과 크기변경
+WinMove, WinTitle, WinText, X, Y , Width, Height
+
+; 문자열 치환
+::btw::by the way
+
+
+어떤 특수 문자는 피신 연속열을 사용하여 만들기도 합니다. 가장 흔한 예는 `t (tab), `n (라인피드), 그리고 `r (캐리지 리턴)입니다.
+
+
+/*
+MsgBox, 이 줄은 주석 처리되어 있습니다 (불능상태).
+MsgBox, 이 줄도 마찬가지입니다. 
+*/
+
+
+; GUI 샘플(창과 버튼)
+;버튼을 추가해주는 부분(1번째 줄)에 gBtn이라는 문구가 보입니다. 이것이 g레이블입니다. 
+;레이블명은 Btn이고요. 주의하실 점은, x y w h부분과 하나의 매개변수라는 것입니다. 즉, 앞에 콤마를 찍지 않습니다.
+
+[GUI에 버튼 추가하는 구문]
+Gui, Add, Button, x위치 y위치 w너비 h높이, 버튼글씨
+- Gui, Show 구문 전에 써준다.
+- 필요시 g레이블을 삽입하되, x y w h와 같은 매개변수임을 생각한다.
+
+[g레이블]
+동작이 발생하면 레이블명으로 이루어진 서브루틴으로 이동한다.
+- g레이블의 g는 Goto의 약자이다. (그렇지만 goto와 다르게, 안심하고 써도 된다)
+
+
+Gui, Add, Edit, x10 y10 w180 h20 vEdit, 입력해주세요
+Gui, Add, Button, x10 y40 w180 h20 gBtn, 출력하기
+Gui, Show, w200 h70, 53강
+return
+
+Btn:
+Gui, Submit, NoHide   ; GUI의 내용을 가져와라
+MsgBox, %Edit%
+return
+
+GuiClose:
+ExitApp
+
+
