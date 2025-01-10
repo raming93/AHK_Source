@@ -131,4 +131,11 @@ return
 GuiClose:
 ExitApp
 
+; 인풋박스로 변수 입력받기
+IB := InputBox("Please enter a phone number.", "Phone Number", "w640 h480")
+if IB.Result = "Cancel"
+    MsgBox "You entered '" IB.Value "' but then cancelled."
+else
+    MsgBox "You entered '" IB.Value "'."
+
 
