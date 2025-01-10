@@ -1,0 +1,82 @@
+; AHK v2 버전 스크립트
+
+#SingleInstance Force ; 미종료 상태에서 새로 켜짐
+CoordMode("Mouse", "Screen") ; 좌표 모드를 스크린 좌표로 설정 (절대 좌표값)
+
+#Persistent ; 스크립트 종료 방지
+
+#y::
+Reload() ; 윈도우+y 스크립트 재시작
+return
+
+#n::
+Run("notepad.exe") ; 노트패드 실행
+return
+
+MouseMove(627, 375) ; 재고관리 화면 즐겨찾기로 마우스 위치 이동
+Click(627, 375) ; 재고관리 화면 열기 (클릭)
+Send("{Esc}") ; ESC 키를 눌러 창 닫기
+
+; 변수 사용 예제
+resultFileName := "파일명"
+Send(resultFileName) ; 변수를 사용할 때는 그대로 사용
+
+; 메시지 박스와 변수 처리
+a := 10
+b := 20
+MsgBox(a " " b " 값입니다.") ; 메시지 박스 출력
+
+Send("^c") ; Ctrl+C (복사)
+
+F1::
+Send("안녕하세요. 저는 홍길동입니다.")
+return
+
+; Esc 키를 누르면 스크립트 종료
+Esc::
+ExitApp()
+return
+
+; 날짜 계산
+Today := Format("{:yyyyMMdd}") ; 현재 날짜
+Previous14Days := Format("{:yyyyMMdd}", A_Now - 14 * 86400000) ; 14일 전
+NextDay := Format("{:yyyyMMdd}", A_Now + 86400000) ; 내일
+
+; 단축키로 날짜와 시간 입력
+:*:]d::
+CurrentDateTime := Format("{:M/d/yyyy h:mm tt}")
+Send(CurrentDateTime)
+return
+
+; 창 최대화
+active_id := WinActive()
+WinMaximize(active_id)
+
+; 메시지 박스 처리
+MsgBox("내용", "제목", "yn") ; Yes, No 옵션 추가
+if MsgBoxResult == "Yes" {
+    MsgBox("예를 눌렀습니다.")
+} else if MsgBoxResult == "No" {
+    MsgBox("아니오를 눌렀습니다.")
+}
+
+; GUI 샘플
+Gui := GuiCreate("Example GUI", 200, 70)
+Gui.Add("Edit", "x10 y10 w180 h20 vEdit", "입력해주세요")
+Gui.Add("Button", "x10 y40 w180 h20", "출력하기").OnEvent("Click", BtnHandler)
+Gui.Show()
+
+BtnHandler(*) {
+    Gui.Submit()
+    MsgBox(Gui["Edit"])
+}
+
+Gui.OnEvent("Close", () => ExitApp())
+
+; InputBox 사용
+IB := InputBox("Please enter a phone number.", "Phone Number", "w640 h480")
+if IB.Cancel {
+    MsgBox("입력을 취소하셨습니다.")
+} else {
+    MsgBox("입력된 값: '" IB.Value "'.")
+}
